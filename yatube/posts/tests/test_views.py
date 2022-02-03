@@ -199,7 +199,7 @@ class PostViewsTests(TestCase):
             'posts:profile_follow', kwargs={'username': self.user_2}))
         self.assertTrue(Follow.objects.filter(
             user=self.user, author=self.user_2).exists()
-                        )
+            )
         self.assertEqual(Follow.objects.count(), follow_count + 1)
 
     def test_unfollow_for_auth(self):
@@ -225,7 +225,6 @@ class PostViewsTests(TestCase):
         post_2 = response_2.context['page_obj']
         self.assertNotEqual(post_2, Post.objects.get(
             text=self.post.text))
-
 
     def test_cache_index(self):
         """Проверка кеширования главной страницы index."""
