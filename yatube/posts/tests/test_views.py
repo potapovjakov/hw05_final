@@ -199,7 +199,7 @@ class PostViewsTests(TestCase):
             'posts:profile_follow', kwargs={'username': self.user_2}))
         self.assertTrue(Follow.objects.filter(
             user=self.user, author=self.user_2).exists()
-            )
+        )
         self.assertEqual(Follow.objects.count(), follow_count + 1)
 
     def test_unfollow_for_auth(self):
