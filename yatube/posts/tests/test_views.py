@@ -40,6 +40,8 @@ class PostViewsTests(TestCase):
         )
         cls.user = User.objects.create_user(username='User')
         cls.user_2 = User.objects.create_user(username='User2')
+        cls.authorized_client = Client()
+        cls.authorized_client_2 = Client()
         cls.post = Post.objects.create(
             author=cls.user,
             text='Text for TEST',
@@ -54,10 +56,8 @@ class PostViewsTests(TestCase):
         cls.follow_index = reverse('posts:follow_index')
 
     def setUp(self):
-        self.authorized_client = Client(self.user)
-        self.authorized_client.force_login(self.user)
-        self.authorized_client_2 = Client()
         self.authorized_client_2.force_login(self.user_2)
+        self.authorized_client.force_login(self.user)
 
     @classmethod
     def tearDownClass(cls):
@@ -190,28 +190,29 @@ class PostViewsTests(TestCase):
 
     def test_follow_for_auth(self):
         """Проверяем функцию profile_follow"""
-        follow_count = Follow.objects.count()
-        Follow.objects.create(
-            user=self.user,
-            author=self.user_2,
-        )
         self.authorized_client.post(reverse(
-            'posts:profile_follow', kwargs={'username': self.user_2}))
-        self.assertTrue(Follow.objects.filter(
-            user=self.user, author=self.user_2).exists()
+            'posts:profile_follow', kwargs={'username': self.user_2})
         )
-        self.assertEqual(Follow.objects.count(), follow_count + 1)
+        self.assertIs(
+            Follow.objects.filter(
+                user=self.user).filter(
+                author=self.user_2).exists(),
+            True
+        )
 
     def test_unfollow_for_auth(self):
         """Проверяем функцию profile_unfollow"""
-        Follow.objects.create(
-            user=self.user,
-            author=self.user_2,
+        self.authorized_client.post(reverse(
+            'posts:profile_follow', kwargs={'username': self.user_2})
         )
-        response_unfollow = Follow.objects.count()
         self.authorized_client.post(reverse(
             'posts:profile_unfollow', kwargs={'username': self.user_2}))
-        self.assertEqual(Follow.objects.count(), response_unfollow)
+        self.assertIs(
+            Follow.objects.filter(
+                user=self.user).filter(
+                author=self.user_2).exists(),
+            False
+        )
 
     def test_follow_index(self):
         """Проверяем follow index"""
@@ -223,20 +224,20 @@ class PostViewsTests(TestCase):
         )
         response_2 = self.authorized_client_2.get(self.follow_index)
         post_2 = response_2.context['page_obj']
-        self.assertNotEqual(post_2, Post.objects.get(
-            text=self.post.text))
+        self.assertNotEqual(
+            post_2,
+            Post.objects.get(text=self.post.text)
+        )
 
     def test_cache_index(self):
         """Проверка кеширования главной страницы index."""
+        response1 = self.authorized_client.get(reverse("posts:index"))
         Post.objects.create(
-            text=self.post.text,
             author=self.user,
+            text=self.post.text,
         )
-        response = self.client.get(reverse('posts:index'))
-        content_1 = response.content
-        last_post = Post.objects.latest('pk')
-        last_post.delete()
+        response2 = self.authorized_client.get(reverse("posts:index"))
+        self.assertEqual(response1.content, response2.content)
         cache.clear()
-        response_2 = self.client.get(reverse('posts:index'))
-        content_2 = response_2.content
-        self.assertNotEqual(content_1, content_2)
+        response3 = self.authorized_client.get(reverse("posts:index"))
+        self.assertNotEqual(response1.content, response3.content)

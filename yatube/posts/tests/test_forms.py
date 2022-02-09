@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+
 from posts.forms import PostForm
 
 from ..models import Comment, Group, Post
@@ -215,6 +216,8 @@ class PostFormTests(TestCase):
         self.assertEqual(Comment.objects.count(), comment_count + 1)
         last_object = Comment.objects.order_by("-id").first()
         self.assertEqual(form_data['text'], last_object.text)
+        last_post = Post.objects.order_by("-id").first()
+        self.assertEqual(self.post.id, last_post.id)
 
     def test_create_comment_guest_client(self):
         """Проверка невозможности создания комментария гостем"""

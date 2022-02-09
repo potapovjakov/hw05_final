@@ -17,6 +17,10 @@ class Group(models.Model):
         'Описание сообщества',
         help_text='Короткое описание сообщества')
 
+    class Meta:
+        verbose_name = 'Сообщество'
+        verbose_name_plural = 'Сообщества'
+
     def __str__(self):
         return self.title
 
@@ -114,7 +118,11 @@ class Follow(models.Model):
     author = models.ForeignKey(
         User,
         related_name='following',
-        verbose_name='Автор',
+        verbose_name='Избранный автор',
         null=True,
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
