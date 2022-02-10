@@ -216,8 +216,7 @@ class PostFormTests(TestCase):
         self.assertEqual(Comment.objects.count(), comment_count + 1)
         last_object = Comment.objects.order_by("-id").first()
         self.assertEqual(form_data['text'], last_object.text)
-        last_post = Post.objects.order_by("-id").first()
-        self.assertEqual(self.post.id, last_post.id)
+        self.assertEqual(last_object.post.id, self.post.id)
 
     def test_create_comment_guest_client(self):
         """Проверка невозможности создания комментария гостем"""

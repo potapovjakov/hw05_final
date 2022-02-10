@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
-{% block title %}Профайл пользователя {{ author.username }}{% endblock %}
+{% block title %}<span style="color:darkred">П</span>рофайл пользователя {{ author.username }}{% endblock %}
 {% block header %}Все записи пользователя {{ author.username }}{% endblock %}
 {% block content %}
   <h3>Всего постов: {{ author.posts.count }}</h3>
     {% if following %}
     <a
-      class="btn btn-lg btn-light"
+      class="btn btn-danger"
       href="{% url 'posts:profile_unfollow' author.username %}" role="button"
     >
       Отписаться
