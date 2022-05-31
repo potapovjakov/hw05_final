@@ -12,10 +12,14 @@ class Group(models.Model):
     slug = models.SlugField(
         'Адрес',
         help_text='Уникальный адрес сообщества',
-        unique=True, max_length=200, null=True)
+        unique=True,
+        max_length=200,
+        null=True
+    )
     description = models.TextField(
         'Описание сообщества',
-        help_text='Короткое описание сообщества')
+        help_text='Короткое описание сообщества'
+    )
 
     class Meta:
         verbose_name = 'Сообщество'
@@ -48,7 +52,8 @@ class Post(models.Model):
         verbose_name='Сообщество',
         help_text='Сообщество поста',
         blank=True,
-        null=True)
+        null=True,
+    )
 
     image = models.ImageField(
         'Картинка',

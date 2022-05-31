@@ -26,12 +26,17 @@ SECRET_KEY = 'x2w7y5q+@whr12(inl96r-7a4p=nu0w1-34vv8^v#vf2st0g+0'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'www.potapovjakov.pythonanywhere.com'
+    'potapovjakov.pythonanywhere.com'
     'localhost',
     '127.0.0.1',
     '[::1]',
     'testserver',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Application definition
 
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'about.apps.AboutConfig',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -130,6 +137,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') # папка, в которой будет лежать статика
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
 # LOGOUT_REDIRECT_URL = 'posts:index'

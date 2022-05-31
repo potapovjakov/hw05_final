@@ -57,8 +57,16 @@ class PostFormTests(TestCase):
         cls.form = PostForm()
 
     def setUp(self):
+        self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+
+    def check_post(self, post):
+        """Принимает объект поста и проверяет его атрибуты"""
+        self.assertEqual(post.text, self.post.text)
+        self.assertEqual(post.author, self.post.author)
+        self.assertEqual(post.group, self.post.group)
+        self.assertEqual(post.image, self.post.image)
 
     @classmethod
     def tearDownClass(cls):
@@ -139,6 +147,29 @@ class PostFormTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(post_upd.text, form_data['text'])
         self.assertEqual(post_upd.group.id, form_data['group'])
+
+    def test_post_edit_form(self):
+        """Валидная форма редактирует запись."""
+        form_data = {
+            'text': 'Измененный текст поcта',
+            'group': self.other_group.id,
+            'files': self.uploaded
+        }
+        posts_count = Post.objects.count()
+        response = self.authorized_client.post(
+            reverse(
+                'posts:post_edit',
+                kwargs={'post_id': self.post.id}
+            ),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(response, reverse(
+            'posts:post_detail',
+            kwargs={'post_id': self.post.id})
+        )
+        self.assertEqual(Post.objects.count(), posts_count)
+        self.check_post(self.post)
 
     def test_edit_post_guest_client(self):
         """Проверка редактирования поста
@@ -235,4 +266,15 @@ class PostFormTests(TestCase):
             'posts:add_comment', kwargs={'post_id': self.post.id})
         comment_create_redirect = f'{login_create_post}?next={post_create_url}'
         self.assertRedirects(response, comment_create_redirect)
+        self.assertEqual(Comment.objects.count(), comment_count)
+
+    def test_comment_not_created_in_database(self):
+        comment_count = Comment.objects.count()
+        post_id = self.post.pk
+        form_comment = {'text': 'Текст комментария'}
+        self.guest_client.post(
+            reverse('posts:add_comment', kwargs={'post_id': post_id}),
+            data=form_comment,
+            follow=True,
+        )
         self.assertEqual(Comment.objects.count(), comment_count)

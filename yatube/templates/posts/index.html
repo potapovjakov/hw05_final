@@ -9,7 +9,7 @@
     {% for post in page_obj %}
     <ul>
       <li>
-        Автор: 
+        Автор:
         <a href="{% url 'posts:profile' post.author.username %}"> {{ post.author.username }}</a>
       </li>
       <li>
@@ -22,10 +22,11 @@
     {{ post.text|linebreaks }}
       <a href="{% url 'posts:post_detail' post.pk%}">Подробная информация о посте</a><br>
     {% if post.group.slug %}
-      <a href="{% url 'posts:posts_group' post.group.slug %}"> Все записи сообщества: {{ post.group.title}} </a> 
+        Все посты сообщества:<a href="{% url 'posts:posts_group' post.group.slug %}"> {{ post.group.title}}</a>
       {% else %}Пост без сообщества{% endif %}
     {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
   {% include 'posts/includes/paginator.html' %}
 {% endcache %}
 {% endblock %}
+`
