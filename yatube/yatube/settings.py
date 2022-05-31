@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'x2w7y5q+@whr12(inl96r-7a4p=nu0w1-34vv8^v#vf2st0g+0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'www.potapovjakov.pythonanywhere.com'
@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    '84.252.141.225',
 ]
 
 INTERNAL_IPS = [
@@ -137,7 +138,11 @@ USE_TZ = True
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_URL = '/static/'
+<<<<<<< HEAD
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/') # папка, в которой будет лежать статика
+=======
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') # папка, в которой будет лежать статика 
+>>>>>>> refs/remotes/origin/master
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
 # LOGOUT_REDIRECT_URL = 'posts:index'
